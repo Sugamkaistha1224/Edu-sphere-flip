@@ -1,0 +1,463 @@
+<HTML>
+<style>
+  body {
+ font-family: Arial;
+}
+.titlemain {
+  height: 700px;
+  width: 99%;
+  background: #ebedb4;
+}
+.titletext {
+    position: absolute;
+    margin-top: 70px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #bacbd1;
+    font-size: 40px;
+    text-shadow: 2px 1.5px black;
+}
+#backbar {
+  position: absolute;
+  top: 70%;
+  left: 30%;
+  width: 37%;
+  background-color: gray;
+  color: black;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: left;
+  padding-left: -10px;
+  opacity: 0.7;
+}
+#loadbar {
+  width: 1%;
+  height: 30px;
+  background: #6ba3ff;
+  padding-left: 10px;
+  opacity: 1;
+}
+.sccan {
+  display: none;
+}
+.body {
+  display: none;
+}
+.topnav {
+  height: 60px;
+  width: 99%;
+  background: #ebedb4;
+  position: absolute;
+}
+.title {
+    position: absolute;
+    top: 30px;
+    left: 100px;
+    transform: translate(-50%, -50%);
+    color: #bacbd1;
+    font-size: 25px;
+    text-shadow: 1.5px 1.5px black;
+}
+.home {
+  position: absolute;
+  left: 25%;
+  top: 9px;
+  width: 85px;
+  padding: 8px;
+  font-size: 25px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 6px solid #efd700;
+  cursor: pointer;
+}
+.home:hover {
+  border-bottom: 6px solid #c9a936;
+  transition: 0.5s;
+}
+.help:hover {
+  border-bottom: 6px solid #c9a936;
+  transition: 0.5s;
+}
+.help {
+  position: absolute;
+  left: 35%;
+  top: 9px;
+  width: 85px;
+  padding: 8px;
+  font-size: 25px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 6px solid #efd700;
+  cursor: pointer;
+}
+.dia:hover {
+  border-bottom: 6px solid #c9a936;
+  transition: 0.5s;
+}
+.dia {
+  position: absolute;
+  left: 45%;
+  top: 9px;
+  width: 85px;
+  padding: 8px;
+  font-size: 25px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 6px solid #efd700;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+#scan {
+  color: black;
+  text-decoration: none;
+}
+#scan a:visited {
+  text-decoration: none;
+}
+.time {
+  position: absolute;
+  text-align: center;
+  right: 25px;
+  top: 2px;
+  font-size: 20px;
+}
+.bodyhome {
+  border: none;
+}
+.td {
+  position: absolute;
+  top: 100px;
+  width: 90%
+}
+.tdheading {
+  position: absolute;
+  left: 24%;
+  font-size: 30px;
+}
+input[type="tdelement"] {
+  position: absolute;
+  left: 5%;
+  top: 50px;
+  width: 40%;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 7px 0px 0px 7px;
+}
+.addbutton {
+  position: absolute;
+  top: 49.5px;
+  left: 46%;
+  padding: 6.5px;
+  width: 6%;
+  background: #d9d9d9;
+  color: #555;
+  float: left;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-radius: 0px 7px 7px 0px;
+}
+.addbutton:hover {
+  background-color: #bbb;
+  box-shadow: 2.5px 2.5px;
+  transition: 0.6s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+ul {
+  position: absolute;
+  width: 48%;
+  left: 5%;
+  top: 90px;
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  list-style-type: none;
+  background: #cdccd1;
+  font-size: 16px;
+  border-radius: 7px;
+  transition: 0.2s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+ul li:nth-child(odd) {
+  background: #e9e8ed;
+}
+ul li:hover {
+  background: #bfbec6;
+  border-radius: 0px;
+}
+ul li:hover {
+  border-radius: 0px;
+  transition: 0.8s;
+}
+ul li.checked {
+  background: #888;
+  color: #fff;
+}
+ul li.checked::before {
+  content: '';
+  position: absolute;
+  border-color: #fff;
+  border-style: solid;
+  border-width: 0 2px 2px 0;
+  top: 10px;
+  left: 16px;
+  transform: rotate(45deg);
+  height: 15px;
+  width: 7px;
+}
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 12px 16px 12px 16px;
+}
+.close:hover {
+  background-color: #f44336;
+  color: white;
+}
+.noteheading {
+  position: absolute;
+  left: 76.5%;
+  font-size: 30px;
+}
+.copy {
+  position: absolute;
+  left: 60%;
+  top: 50px;
+  height: 25px;
+  width: 20%;
+  border: 1px solid black;
+  border-bottom: none;
+  cursor: pointer;
+  border-radius: 7px 0px 0px 0px;
+  background: #c2c9d3;
+}
+.copy:hover {
+  background: #a09e95;
+  transition: 0.5s;
+}
+.clear {
+  position: absolute;
+  left: 80%;
+  top: 50px;
+  height: 25px;
+  width: 21%;
+  border: 1px solid black;
+  border-left: none;
+  border-bottom: none;
+  cursor: pointer;
+  border-radius: 0px 7px 0px 0px;
+  background: #c2c9d3;
+}
+.clear:hover {
+  background: #a09e95;
+  transition: 0.5s;
+}
+.edit {
+  position: absolute;
+  left: 60%;
+  top: 75px;
+  margin: none;
+  height: 200px;
+  padding: 5px;
+  border: none;
+  width: 40%;
+  font-family: Arial;
+  background: none;
+  border: 1px solid black;
+  border-radius: 0px 0px 7px 7px;
+}
+.htitle {
+  position: absolute;
+  left: 45%;
+  top: 100px;
+  font-size: 30px;
+}
+.q1 {
+  position: absolute;
+  left: 5%;
+  top: 140px;
+  font-size: 20px;
+}
+input[type="helpme"] {
+  position: absolute;
+  left: 5%;
+  top: 175px;
+  font-size: 13px;
+  width: 25%;
+  border: 1px solid black;
+  border-radius: 7px;
+  padding: 5px;
+}
+</style>
+  <BODY ONLOAD="load()">
+  <DIV CLASS="titlemain" ID="titlemain">
+    <DIV CLASS="titletext">&ensp;NotePad S<BR>
+<BR>
+      <IMG SRC="data:image/jpeg;base64,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"></IMG>
+      </DIV>
+    <DIV ID="backbar"><DIV ID="loadbar"></DIV></DIV>
+  </DIV>
+      <DIV ID="body" CLASS="body">
+  <DIV CLASS="topnav"> 
+    <DIV CLASS="title">
+      NotePad S
+    </DIV>
+    <BUTTON CLASS="home" ONCLICK="home()">Home</BUTTON>
+    <BUTTON CLASS="help" ONCLICK="help()">Help</BUTTON>
+    <BUTTON CLASS="dia"><A HREF="javascript:diagnoseErrors()" JSTCACHE="0" ID="scan">Scan<IFRAME SRC="chrome-extension:// idddmepepmjcgiedknnmlbadcokidhoa/index.html" CLASS="sccan"></IFRAME></A></BUTTON>
+    <DIV CLASS="time">
+      <P ID="time">--:--:-- --</P>
+    </DIV>
+  </DIV>
+<DIV CLASS="bodyhome" ID="bodyhome">
+<DIV CLASS="td">
+  <DIV CLASS="tdheading">
+    To Do:</DIV>
+          <INPUT TYPE="tdelement" ID="input" SPELLCHECK="on" PLACEHOLDER="Play more Minecraft."><SPAN ONCLICK="newElement()" CLASS="addbutton">Add</SPAN>
+           <UL ID="tdlist"></UL>
+            <DIV CLASS="noteheading">Notes:</DIV>
+<BUTTON CLASS="copy" NAME="copy" ONCLICK="copy()">Copy Text</BUTTON><BUTTON CLASS="clear" NAME="clear" ONCLICK="document.getElementById('edit').value = ''">Clear All</BUTTON><BR>
+      <TEXTAREA CLASS="edit" NAME="edit" ID="edit" SPELLCHECK="true" ROWS="20">Play Minecraft bois!</TEXTAREA>
+</DIV>
+</DIV>
+<DIV ID="bodyhelp" STYLE="display: none;">
+  <DIV CLASS="htitle">Help:</DIV>
+  <DIV CLASS="q1">What do need help with?</DIV>
+<INPUT TYPE="helpme" PLACEHOLDER="Why is Minecraft good?" ONKEYUP="find()">
+</DIV>
+  </DIV>
+  <script type="text/javascript">
+    var time = setInterval(time, 1000);
+var startime = new Date().getTime;
+
+function time() {
+    var time = new Date();
+    document.getElementById("time").innerHTML = time.toLocaleTimeString();
+}
+
+var myNodelist = document.getElementsByTagName("LI");
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  myNodelist[i].appendChild(span);
+}
+
+var close = document.getElementsByClassName("close");
+var i;
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function() {
+    var div = this.parentElement;
+    div.style.display = "none";
+  }
+}
+
+var list = document.querySelector('ul');
+list.addEventListener('click', function(ev) {
+  if (ev.target.tagName === 'LI') {
+    ev.target.classList.toggle('checked');
+  }
+}, false);
+
+function newElement() {
+  var li = document.createElement("li");
+  var inputValue = document.getElementById("input").value;
+  var t = document.createTextNode(inputValue);
+  li.appendChild(t);
+  if (inputValue === '') {
+    document.getElementById("input").value =  "";
+  } else {
+    document.getElementById("tdlist").appendChild(li);
+  }
+  document.getElementById("input").value = "";
+
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode("\u00D7");
+  span.className = "close";
+  span.appendChild(txt);
+  li.appendChild(span);
+
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function() {
+      var div = this.parentElement;
+      div.style.display = "none";
+    }
+  }
+}
+function copy() {
+  var copy = document.getElementById("edit");
+    copy.select();
+    document.execCommand("copy");
+    alert("Text has been copied ✅");
+}
+function clear() {
+   document.getElementById('edit').value = '';
+}
+function home() {
+  document.getElementById("bodyhome").style.display = "inline";
+  document.getElementById("bodyhelp").style.display = "none";
+}
+function help() {
+  document.getElementById("bodyhelp").style.display = "inline";
+  document.getElementById("bodyhome").style.display = "none";
+}
+ function find() {
+  alert("Sorry, I can't seem to figure out what you mean because I haven't figured out how to make a help page. If you have any ideas please leave a comment :D");
+}
+
+var isdone;
+var loading;
+function load() {
+  load = setTimeout(load2, 10);
+}
+function load2() {
+  var elem = document.getElementById("loadbar");   
+  var width = 1;
+  var id = setInterval(frame, Math.floor(Math.random() * 100^2 + Math.random() * 10));
+  function frame() {
+    if (width >= 95) {
+      clearInterval(id);
+      setTimeout(finish, 700);
+      setTimeout(alertt, 6000);
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+      elem.innerHTML= width * 1 + "%";
+    }
+  }
+}
+function finish() {
+   document.getElementById("titlemain").style.display = "none";
+   document.getElementById("body").style.display = "inline";
+}
+function alertt() {
+  alert("As long as you don't edit the code, refresh, or exit, your info will be saved. (This is the Beta version; diagnostics and local storage will come out soon.)");
+  alert("Got it?");
+}
+  </script>
+ <BODY>
+   </HTML>

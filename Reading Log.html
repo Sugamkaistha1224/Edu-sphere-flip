@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reading Log</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 40px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #0077cc;
+      color: white;
+    }
+
+    th, td {
+      padding: 14px 20px;
+      text-align: left;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #e8f4ff;
+    }
+
+    th.sortable:hover {
+      cursor: pointer;
+      background-color: #005fa3;
+    }
+
+    .stars {
+      color: gold;
+      font-size: 1.1em;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead tr {
+        display: none;
+      }
+
+      td {
+        padding: 12px;
+        position: relative;
+        padding-left: 50%;
+      }
+
+      td::before {
+        position: absolute;
+        left: 20px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #555;
+      }
+
+      td:nth-of-type(1)::before { content: "Title"; }
+      td:nth-of-type(2)::before { content: "Author"; }
+      td:nth-of-type(3)::before { content: "Date Read"; }
+      td:nth-of-type(4)::before { content: "Rating"; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📚 My Reading Log</h1>
+
+  <table id="readingLog">
+    <thead>
+      <tr>
+        <th class="sortable">Title</th>
+        <th class="sortable">Author</th>
+        <th class="sortable">Date Read</th>
+        <th class="sortable">Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Deep Work</td>
+        <td>Cal Newport</td>
+        <td>2024-03-10</td>
+        <td><span class="stars">★★★★☆</span></td>
+      </tr>
+      <tr>
+        <td>Atomic Habits</td>
+        <td>James Clear</td>
+        <td>2024-01-22</td>
+        <td><span class="stars">★★★★★</span></td>
+      </tr>
+      <tr>
+        <td>The Pragmatic Programmer</td>
+        <td>Andrew Hunt</td>
+        <td>2023-12-01</td>
+        <td><span class="stars">★★★★☆</span></td>
+      </tr>
+      <tr>
+        <td>Clean Code</td>
+        <td>Robert C. Martin</td>
+        <td>2024-02-15</td>
+        <td><span class="stars">★★★★★</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    document.querySelectorAll(".sortable").forEach(header => {
+      header.addEventListener("click", () => {
+        const table = header.closest("table");
+        const tbody = table.querySelector("tbody");
+        const index = Array.from(header.parentNode.children).indexOf(header);
+        const ascending = header.classList.toggle("asc");
+
+        [...tbody.querySelectorAll("tr")]
+          .sort((a, b) => {
+            const aText = a.children[index].textContent.trim();
+            const bText = b.children[index].textContent.trim();
+
+            // Convert stars to number
+            const parseStars = str => (str.match(/★/g) || []).length + (str.includes("☆") ? 0.5 : 0);
+
+            if (index === 3) {
+              return ascending ? parseStars(aText) - parseStars(bText) : parseStars(bText) - parseStars(aText);
+            }
+
+            // Handle dates
+            if (index === 2) {
+              return ascending ? new Date(aText) - new Date(bText) : new Date(bText) - new Date(aText);
+            }
+
+            return ascending
+              ? aText.localeCompare(bText)
+              : bText.localeCompare(aText);
+          })
+          .forEach(row => tbody.appendChild(row));
+      });
+    });
+  </script>
+
+</body>
+</html>

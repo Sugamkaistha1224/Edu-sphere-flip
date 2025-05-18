@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Video with Timestamped Comments</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .video-container {
+      position: relative;
+      width: 800px;
+      max-width: 100%;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    .comments-panel {
+      width: 800px;
+      max-width: 100%;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .comment {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .comment:last-child {
+      border-bottom: none;
+    }
+
+    .timestamp {
+      background: #0077cc;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+
+    .timestamp:hover {
+      background: #005fa3;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .active-comment {
+      background: #e8f5ff;
+      border-left: 4px solid #0077cc;
+      padding-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎥 Interactive Video with Timestamped Comments</h1>
+
+  <div class="video-container">
+    <video id="videoPlayer" controls>
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="comments-panel" id="commentsPanel">
+    <!-- Timestamped comments -->
+    <div class="comment" data-time="2">
+      <span>Intro is very clear!</span>
+      <span class="timestamp">0:02</span>
+    </div>
+    <div class="comment" data-time="5">
+      <span>Useful example at this part.</span>
+      <span class="timestamp">0:05</span>
+    </div>
+    <div class="comment" data-time="10">
+      <span>This explanation helped me understand better.</span>
+      <span class="timestamp">0:10</span>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById('videoPlayer');
+    const comments = document.querySelectorAll('.comment');
+
+    // Make timestamps clickable
+    comments.forEach(comment => {
+      const timestamp = comment.querySelector('.timestamp');
+      timestamp.addEventListener('click', () => {
+        const time = parseFloat(comment.dataset.time);
+        video.currentTime = time;
+        video.play();
+      });
+    });
+
+    // Highlight comment at the right time
+    video.addEventListener('timeupdate', () => {
+      comments.forEach(comment => {
+        const time = parseFloat(comment.dataset.time);
+        if (Math.abs(video.currentTime - time) < 1) {
+          comment.classList.add('active-comment');
+        } else {
+          comment.classList.remove('active-comment');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

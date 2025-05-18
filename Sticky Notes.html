@@ -1,0 +1,332 @@
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style type="text/css">
+   *{
+    margin: 0;
+    padding: 0;
+    font-family: 'Reggae One', cursive;
+    /* font-family: 'Source Code Pro', monospace; */
+}
+
+#message{
+    margin-top: 3.4rem;
+}
+.container{
+    margin: 3rem auto;
+    padding: 1.2rem;
+}
+#addBtn:hover{
+background-color: #198754;
+}
+.dl:hover{
+background-color: #ff1129!important;
+}
+footer{
+    background-color: #020202!important;
+    padding: 5px!important;
+    text-align: center;
+    color: azure;
+}
+footer>p{
+    margin-bottom: 0!important;
+}
+.foot{
+    float: right;
+    padding: 0rem 0.95rem!important;
+}
+.foot a{
+    color: white;
+}
+ </style>
+  <link rel="shortcut icon" href="images/fav.jpeg" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css"
+    integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Reggae+One&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="https://about-edusphere.vercel.app/">Edusphere</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#"><i class="fas fa-house-user"></i> Home</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <input class="form-control me-2" id="searchTxt" type="search" placeholder="Search ac your note"
+            aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div id="message"></div>
+  <div class="container">
+    <h1 class="text-center">Welcome to Sticky Notes!</h1>
+    <div class="card">
+      <div class="card-body">
+        <div class="mb-3">
+          <!-- <h6 class="card-title" style="margin-bottom: 1rem;">Date</h5>
+            <input type="date" id="addDate" style="margin-bottom: 1rem;"> -->
+            <h5 class="card-title">Title</h5>
+            <input type="text" class="form-control" id="addTitle" aria-describedby="title"
+              placeholder="Enter Note Title">
+        </div>
+        <h5 class="card-title">Add a Note <small style="font-size: 9px;">(In a lowercase)</small> </h5>
+        <div class="form-floating">
+          <textarea class="form-control" placeholder="Add a note in lowerCase only" aria-describedby="text" id="addText"
+            style="height: 100px"></textarea>
+
+        </div>
+        <button class="btn btn-primary my-3" id="addBtn">Add Note &raquo;</button>
+      </div>
+    </div>
+    <hr>
+    <h2 class="text-muted">Your Notes</h2>
+    <hr>
+    <div id="notes" class="row container-fluid">
+    </div>
+  </div>
+  <footer>
+    <button type="button" class="btn btn-dark foot" data-bs-toggle="tooltip" data-bs-placement="top"
+      title="Move to Top">
+      <a href="#"><i class="fas fa-arrow-up"></i></a>
+    </button>
+    <p>&copy; 2025 Sticky Notes | Sugam Notes <i class="fas fa-sticky-note"></i> <a href="#">Terms </a>&middot; <a
+        href="#">Conditions</a></p>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+    crossorigin="anonymous"></script>
+  <script>
+    
+
+// console.log("Hello");
+// method to show available notes
+// let val =0;
+showNotes(); 
+let addBtn = document.getElementById("addBtn");
+addBtn.addEventListener("click", () => {
+        let messagesuccess =document.getElementById("message");
+        messagesuccess.innerHTML = `
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> You had successfully added your note!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        `;
+        setTimeout(() => {
+            messagesuccess.innerHTML = ``;
+        }, 6000);
+        
+});
+
+// addBtn.addEventListener("click",()=>{
+//     document.getElementById("valDate").innerHTML = Date();
+// });
+addBtn.addEventListener("click", () => {
+
+    let addText = document.getElementById("addText");
+    let addTitle = document.getElementById("addTitle");
+    // let addDate = document.getElementById("addDate");
+// accessing local storage
+    let notes = localStorage.getItem("notes"); 
+    if (notes === null) {
+        notesObj = [];
+    }
+    else {
+        notesObj = JSON.parse(notes); 
+    }
+
+    let enterNotes = {
+        date: noteDate(),
+        time : clocky(),
+        title: addTitle.value,
+        text: addText.value,
+        
+    }
+    notesObj.push(enterNotes);
+    localStorage.setItem("notes", JSON.stringify(notesObj)); 
+    addText.value = "";
+    addTitle.value = "";
+    // addDate.value = "";
+    // console.log(notesObj);
+    showNotes();
+
+});
+
+
+
+
+var originalDate ,originalMonth,originalYear ,dt ,giveDate;
+function noteDate() {
+    dt = new Date();
+    originalDate = dt.getDate();
+    originalMonth = dt.getMonth() +1;
+    originalYear = dt.getFullYear();
+    
+    
+    if (originalDate <= 9) {
+        originalDate = '0' + originalDate;
+    }
+    if (originalMonth <= 9) {
+        originalMonth = '0' + originalMonth;
+    }
+    if (originalYear <= 9) {
+        originalYear = '0' + originalYear;
+    }
+
+    return (giveDate = originalDate + `<span class= "slash">/</span>` + originalMonth + `<span class= "slash">/</span>` + originalYear);
+    
+}
+var dy, hr, min, sec, clock;
+
+function clocky() {
+    dy = new Date();
+    hr = dy.getHours();
+    min = dy.getMinutes();
+    sec = dy.getSeconds();
+    
+    
+    if (hr <= 9) {
+        hr = '0' + hr;
+    }
+    if (min <= 9) {
+        min = '0' + min;
+    }
+    if (sec <= 9) {
+        sec = '0' + sec;
+    }
+
+    return (clock = hr + `<span class= "colon">:</span>` + min + `<span class= "colon">:</span>` + sec);
+    
+}
+
+// Show note Card function 
+function showNotes() {
+    let notes = localStorage.getItem("notes"); 
+    if (notes === null) {
+        notesObj = [];
+    }
+    else {
+        notesObj = JSON.parse(notes); 
+    }
+
+    let html = "";
+    notesObj.forEach((element, index) => {
+        html += `
+        <div class="noteCard my-2 mx-2 card" style="width: 18rem;
+        border-radius:6px;
+        border:1px solid black;
+        ">
+        <div class="card-body">
+    
+    <h5 class="card-title"  style="font-family: 'Bungee', cursive;">${element.date}</h5>
+    
+    <h6 class="card-title" id="clock" style="font-family: 'Bungee Inline', cursive;">${element.time}</h6>
+        <h2 class="card-title">${element.title}</h2>
+        <p class="card-text">${element.text}</p>
+        <button class="btn btn-warning dl" id="${index}" onclick="deleteButton(this.id)"><i class="fas fa-trash"></i> Delete Note</button>
+        </div>
+        </div>
+        `;
+    });
+
+    let addedNotes = document.getElementById("notes");
+    if (notesObj.length != 0) {
+        addedNotes.innerHTML = html;
+    } else {
+        addedNotes.innerHTML = `<h2 class="text-dark" style="background-color: #ffb8b8;
+        margin:2rem;
+        padding:1rem;
+        border-radius:6px;
+        border:2px solid black;
+        ";>Nothing to show Kindly add a note first!</h2>`;
+    }
+
+
+}
+
+// // Adding Date
+// function showDate(index) {
+//     return document.getElementById(index).innerHTML = Date();
+// }
+// Deleting notes
+function deleteButton(index) {
+    // console.log("I am deleting", index);
+    let notes = localStorage.getItem("notes"); 
+    if (notes === null) {
+        notesObj = [];
+    }
+    else {
+        notesObj = JSON.parse(notes); 
+    }
+    // remove first passed element and update further automatically
+    notesObj.splice(index, 1);
+    // converting notes into a string format
+    localStorage.setItem("notes", JSON.stringify(notesObj));
+    showNotes();
+    let messagedelete =document.getElementById("message");
+    messagedelete.innerHTML = `
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Deleted!</strong> Oooppsss! You had deleted your note.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    `;
+    setTimeout(() => {
+        messagedelete.innerHTML = ``;
+    }, 6000);
+
+}
+
+// searching input
+let searchText = document.getElementById("searchTxt");
+searchText.addEventListener("input", () => {
+    let inputLowerValue = searchText.value.toLowerCase();
+    // console.log("input event fired" , inputValue);
+    let noteCards = document.getElementsByClassName("noteCard");
+    Array.from(noteCards).forEach((accessCard) => {
+        let cardTxt = accessCard.getElementsByTagName("p")[0].innerText;
+        if((cardTxt.includes(inputLowerValue)) ) {
+            accessCard.style.display = "block";
+        } else {
+            accessCard.style.display = "none";
+        }
+      
+    });
+    let messageSearch =document.getElementById("message");
+    messageSearch.innerHTML = `
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <strong>Ready!</strong> Your searched note is right here.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    `;
+    setTimeout(() => {
+        messageSearch.innerHTML = ``;
+    }, 6000);
+});
+
+
+  </script>
+</body>
+
+</html>

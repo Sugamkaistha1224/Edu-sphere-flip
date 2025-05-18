@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Video with Timestamped Comments</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .video-container {
+      position: relative;
+      width: 800px;
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+    video, iframe {
+      width: 100%;
+      height: 450px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .comments-panel {
+      width: 800px;
+      max-width: 100%;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .comment {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .timestamp {
+      background: #0077cc;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .timestamp:hover {
+      background: #005fa3;
+    }
+    .active-comment {
+      background: #e8f5ff;
+      border-left: 4px solid #0077cc;
+      padding-left: 10px;
+    }
+    .controls {
+      margin-bottom: 20px;
+      width: 800px;
+      max-width: 100%;
+    }
+    input[type="file"], input[type="text"] {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎥 Interactive Video with Timestamped Comments</h1>
+
+  <div class="controls">
+    <input type="file" id="videoUpload" accept="video/*">
+    <input type="text" id="youtubeUrl" placeholder="Paste YouTube link here (e.g. https://www.youtube.com/watch?v=...)">
+    <button onclick="loadVideo()">Load Video</button>
+  </div>
+
+  <div class="video-container" id="videoContainer">
+    <video id="videoPlayer" controls>
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="comments-panel" id="commentsPanel">
+    <div class="comment" data-time="2">
+      <span>Intro is very clear!</span>
+      <span class="timestamp">0:02</span>
+    </div>
+    <div class="comment" data-time="5">
+      <span>Useful example at this part.</span>
+      <span class="timestamp">0:05</span>
+    </div>
+    <div class="comment" data-time="10">
+      <span>This explanation helped me understand better.</span>
+      <span class="timestamp">0:10</span>
+    </div>
+  </div>
+
+  <script>
+    const videoUpload = document.getElementById('videoUpload');
+    const youtubeUrl = document.getElementById('youtubeUrl');
+    const videoContainer = document.getElementById('videoContainer');
+    const comments = document.querySelectorAll('.comment');
+    let videoPlayer = document.getElementById('videoPlayer');
+
+    function loadVideo() {
+      const file = videoUpload.files[0];
+      const ytUrl = youtubeUrl.value.trim();
+
+      // Reset container
+      videoContainer.innerHTML = '';
+
+      if (file) {
+        const url = URL.createObjectURL(file);
+        const video = document.createElement('video');
+        video.id = 'videoPlayer';
+        video.controls = true;
+        video.innerHTML = `<source src="${url}" type="${file.type}">Your browser does not support the video tag.`;
+        videoContainer.appendChild(video);
+        setupTimestamps(video);
+      } else if (ytUrl.includes('youtube.com/watch')) {
+        const videoId = ytUrl.split('v=')[1].split('&')[0];
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+        iframe.frameborder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        videoContainer.appendChild(iframe);
+
+        alert("⚠️ Timestamp highlighting works only for local videos. YouTube timestamp sync requires YouTube API + more logic.");
+      } else {
+        alert("Please upload a video or paste a valid YouTube link.");
+      }
+    }
+
+    function setupTimestamps(video) {
+      comments.forEach(comment => {
+        const timestamp = comment.querySelector('.timestamp');
+        timestamp.addEventListener('click', () => {
+          const time = parseFloat(comment.dataset.time);
+          video.currentTime = time;
+          video.play();
+        });
+      });
+
+      video.addEventListener('timeupdate', () => {
+        comments.forEach(comment => {
+          const time = parseFloat(comment.dataset.time);
+          if (Math.abs(video.currentTime - time) < 1) {
+            comment.classList.add('active-comment');
+          } else {
+            comment.classList.remove('active-comment');
+          }
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

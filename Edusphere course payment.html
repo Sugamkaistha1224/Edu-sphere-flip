@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mavens Pay - Secure Payment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #004aad;
+            --primary-light: rgba(0, 74, 173, 0.1);
+            --primary-hover: #003d8f;
+            --secondary: #00C2CB;
+            --accent: #f59e0b;
+            --white: #ffffff;
+            --black: #1C1C1E;
+            --gray-light: #f5f7fa;
+            --gray-medium: #e2e8f0;
+            --gray-dark: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+
+            /* Base Theme (Light) */
+            --bg-color: var(--gray-light);
+            --card-bg: var(--white);
+            --text-color: var(--black);
+            --text-muted: var(--gray-dark);
+            --border-color: var(--gray-medium);
+            --input-bg: var(--white);
+            --sidebar-bg-start: var(--primary);
+            --sidebar-bg-end: var(--primary-hover);
+            --sidebar-text: var(--white);
+            --sidebar-overlay-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .dark-mode {
+            --primary: #2563eb; /* Adjusted primary for dark */
+            --primary-light: rgba(37, 99, 235, 0.15);
+            --primary-hover: #1d4ed8;
+            --accent: #f9b949; /* Slightly lighter accent */
+            --white: #1f2937; /* Dark background */
+            --black: #f3f4f6; /* Light text */
+            --gray-light: #111827; /* Very dark bg */
+            --gray-medium: #374151; /* Darker border */
+            --gray-dark: #9ca3af; /* Lighter muted text */
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+
+            --bg-color: var(--gray-light);
+            --card-bg: var(--white); /* Uses dark bg */
+            --text-color: var(--black); /* Uses light text */
+            --text-muted: var(--gray-dark);
+            --border-color: var(--gray-medium);
+            --input-bg: #374151; /* Dark input background */
+            --sidebar-bg-start: #1e3a8a; /* Darker sidebar */
+            --sidebar-bg-end: #1e40af;
+            --sidebar-text: #e5e7eb; /* Slightly off-white sidebar text */
+            --sidebar-overlay-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 1rem; /* Add gap for wrapped items */
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .support-link {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .support-link:hover {
+            color: var(--primary);
+        }
+
+        .support-link i {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 50px;
+            margin-left: 8px;
+        }
+        .theme-switch input {
+            display:none;
+        }
+        .slider {
+            background-color: var(--gray-medium);
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            background-color: var(--white);
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+         }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: var(--card-bg); /* Use card bg for contrast */
+        }
+
+        .payment-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: flex;
+            min-height: 650px; /* Slightly increased height */
+            transition: background-color 0.3s ease;
+        }
+
+        .payment-sidebar {
+            width: 40%;
+            background: linear-gradient(135deg, var(--sidebar-bg-start), var(--sidebar-bg-end));
+            padding: 3rem;
+            color: var(--sidebar-text);
+            position: relative;
+            overflow: hidden;
+            display: flex; /* Use flex */
+            flex-direction: column; /* Stack content vertically */
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0aDI0djI0SDM2em0wLTI0aDI0djI0SDM2ek0xMiAzNGgyNHYyNEgxMnptMC0yNGgyNHYyNEgxMnoiLz48L2c+PC9nPjwvc3ZnPg==');
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .dark-mode .sidebar-overlay {
+           background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoMjR2MjRIMzZ6bTAtMjRoMjR2MjRIMzZ6TTEyIDM0aDI0djI0SDEyem0wLTI0aDI0djI0SDEyeiIvPjwvZz48L2c+PC9zdmc+'); /* Darker overlay */
+        }
+
+
+        .sidebar-content {
+            position: relative;
+            z-index: 2;
+            flex-grow: 1; /* Allow content to take available space */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .sidebar-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Payment Summary */
+        .payment-summary {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark-mode .payment-summary {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+        .summary-label {
+            opacity: 0.8;
+        }
+        .summary-value {
+            font-weight: 600;
+        }
+        #summaryMethod {
+            min-height: 1.2em; /* Prevent layout shift when empty */
+        }
+
+
+        .payment-steps {
+            margin-top: auto; /* Push steps to the bottom */
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--sidebar-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: 600;
+            flex-shrink: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .step-item.active {
+            opacity: 1;
+        }
+        .step-item.active .step-number {
+            background: var(--accent);
+            color: var(--black); /* Use black for contrast on accent */
+        }
+         .dark-mode .step-item.active .step-number {
+            color: #1f2937; /* Dark text on accent */
+         }
+
+
+        .step-item.completed {
+             opacity: 1;
+        }
+        .step-item.completed .step-number {
+            background: var(--success);
+            color: var(--white); /* White text on success */
+        }
+        .dark-mode .step-item.completed .step-number {
+             color: #fff;
+        }
+
+        .step-item.completed .step-number i {
+            display: block;
+            font-size: 14px;
+        }
+
+        .step-item.completed .step-number span {
+            display: none;
+        }
+
+        .step-text {
+            font-weight: 500;
+        }
+
+        .step-item.active .step-text {
+            font-weight: 600;
+        }
+
+        .payment-form-container {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto; /* Add scroll if content overflows */
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative; /* For error message positioning */
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            height: 50px;
+            padding: 0 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: var(--gray-dark);
+            opacity: 0.8;
+        }
+
+        /* Input Error State */
+        .form-control.is-invalid {
+            border-color: var(--error);
+        }
+        .form-control.is-invalid:focus {
+             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2); /* Error focus shadow */
+        }
+
+        .invalid-feedback {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease;
+        }
+        .form-control.is-invalid + .invalid-feedback {
+            display: block; /* Show when input is invalid */
+        }
+
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        /* Payment Dropdown Styles */
+        .payment-dropdown {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .dropdown-toggle:hover {
+            border-color: var(--primary);
+        }
+
+        .dropdown-toggle.active {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            border-bottom-left-radius: 0; /* Flatten bottom corners when open */
+            border-bottom-right-radius: 0;
+        }
+
+        .toggle-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .method-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 12px;
+            object-fit: contain;
+            /* Filter for dark mode if needed - example for inverting */
+            /* .dark-mode & { filter: invert(1) hue-rotate(180deg); } */
+        }
+        /* Specific fix for white Wise logo on dark bg */
+         .dark-mode img[src*="wise"][src*="white"] {
+            filter: brightness(5);
+         }
+         /* Specific fix for UnionBank logo color in dark mode */
+         .dark-mode img[src*="unionbank"] {
+            filter: contrast(0) brightness(2) sepia(1) hue-rotate(150deg) saturate(5); /* Attempt to make orange visible */
+         }
+
+
+        .toggle-arrow {
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .dropdown-toggle.active .toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% - 1px); /* Position below toggle, overlap border */
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--primary); /* Match active border */
+            border-top: none; /* Remove top border */
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            max-height: 0;
+            overflow-y: auto; /* Scroll if many options */
+            opacity: 0;
+            visibility: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s linear;
+        }
+
+        .dropdown-menu.show {
+            max-height: 250px; /* Limit height */
+            opacity: 1;
+            visibility: visible;
+            transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0s 0s linear;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            color: var(--text-color);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+        }
+         .dark-mode .dropdown-item:hover {
+             background-color: rgba(37, 99, 235, 0.2); /* Darker hover */
+         }
+
+        /* Payment Method Content */
+        .method-content {
+            display: none;
+            animation: fadeIn 0.5s ease forwards; /* Use forwards to keep final state */
+            margin-top: 1.5rem;
+        }
+
+        .method-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .qr-container {
+            text-align: center;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--bg-color); /* Use body bg */
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .qr-code {
+            width: 180px; /* Slightly smaller QR */
+            height: 180px;
+            margin: 0 auto 1rem auto;
+            background: var(--card-bg); /* Use card bg */
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px; /* Rounded corners for QR bg */
+        }
+
+        .qr-code img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block; /* Prevent extra space */
+        }
+
+        .qr-instructions {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .bank-info {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bank-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Align items vertically */
+            margin-bottom: 0.75rem;
+            gap: 1rem; /* Add gap */
+            flex-wrap: wrap; /* Allow wrapping */
+        }
+        .bank-detail:last-child {
+            margin-bottom: 0;
+        }
+
+        .bank-label {
+            font-weight: 500;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .bank-value-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* Space between value and button */
+        }
+
+        .bank-value {
+            font-weight: 600;
+            color: var(--text-color);
+            word-break: break-all; /* Prevent long strings overflow */
+        }
+
+        /* Tooltip Base */
+        [data-tooltip] {
+          position: relative;
+          cursor: pointer;
+        }
+        [data-tooltip]::before,
+        [data-tooltip]::after {
+          position: absolute;
+          visibility: hidden;
+          opacity: 0;
+          transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+          pointer-events: none;
+          z-index: 100; /* Ensure tooltip is on top */
+        }
+        [data-tooltip]::before { /* The tooltip text */
+          content: attr(data-tooltip);
+          padding: 6px 10px;
+          background-color: var(--black);
+          color: var(--white);
+          border-radius: 4px;
+          font-size: 0.8rem;
+          white-space: nowrap;
+          /* Positioning */
+          bottom: 125%; /* Position above the element */
+          left: 50%;
+          transform: translateX(-50%);
+        }
+        .dark-mode [data-tooltip]::before {
+            background-color: var(--gray-light); /* Darker tooltip bg */
+            color: var(--black); /* Lighter text */
+        }
+
+        [data-tooltip]::after { /* The tooltip arrow */
+          content: '';
+          border-width: 5px;
+          border-style: solid;
+          border-color: var(--black) transparent transparent transparent;
+           /* Positioning */
+          top: -5px; /* Adjust to point correctly */
+          left: 50%;
+          transform: translateX(-50%);
+           margin-top: calc(100% + 5px); /* Position arrow below text */
+           bottom: calc(100% + 1px); /* Position arrow below text */
+        }
+        .dark-mode [data-tooltip]::after {
+             border-top-color: var(--gray-light);
+        }
+
+        [data-tooltip]:hover::before,
+        [data-tooltip]:hover::after {
+          visibility: visible;
+          opacity: 1;
+        }
+
+
+        .copy-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: var(--card-bg);
+        }
+        .copy-btn.copied {
+            background: var(--success);
+            color: var(--white);
+        }
+        .dark-mode .copy-btn.copied {
+            color: #fff;
+        }
+
+
+        /* File Input Specific Styles */
+        .form-control[type="file"] {
+            padding: 0; /* Remove default padding */
+            height: auto; /* Allow height adjustment */
+            line-height: normal; /* Fix potential alignment issues */
+        }
+        /* Style the button-like appearance */
+        .form-control[type="file"]::file-selector-button {
+            height: 48px; /* Match input height */
+            padding: 0 1rem;
+            margin-right: 1rem;
+            background: var(--gray-medium);
+            border: none;
+            border-right: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .form-control[type="file"]::file-selector-button:hover {
+             background: #d1d5db; /* Slightly darker gray */
+        }
+        .dark-mode .form-control[type="file"]::file-selector-button {
+            background: var(--gray-dark);
+            border-right-color: #4b5563;
+            color: var(--text-color);
+        }
+        .dark-mode .form-control[type="file"]::file-selector-button:hover {
+            background: var(--text-muted);
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-align: center;
+            position: relative; /* For loading state */
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: var(--white);
+            width: 100%;
+        }
+        .dark-mode .btn-primary {
+            color: #fff; /* Ensure text is white */
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 74, 173, 0.2);
+        }
+         .dark-mode .btn-primary:hover:not(:disabled) {
+             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+         }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        /* Loading Spinner */
+        .btn .spinner {
+            display: none; /* Hidden by default */
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-infinite;
+            margin-right: 8px; /* Space between spinner and text */
+        }
+         .dark-mode .btn .spinner {
+             border-top-color: #fff;
+         }
+
+        .btn.loading .spinner {
+            display: inline-block;
+        }
+        .btn.loading span { /* Hide original text when loading */
+            /* display: none; */ /* Option 1: Hide Text completely */
+             opacity: 0.7; /* Option 2: Dim text */
+        }
+        .btn.loading i:not(.spinner) { /* Hide icon if not spinner */
+            display: none;
+        }
+
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+
+        .payment-security {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .payment-security i {
+            margin-right: 8px;
+            color: var(--success);
+        }
+
+        /* Verification Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s linear;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s 0s linear;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem; /* More padding */
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            position: relative; /* For close button */
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .modal-close-btn:hover {
+            color: var(--text-color);
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .modal-icon.verifying { color: var(--warning); }
+        .modal-icon.success { color: var(--success); }
+        .modal-icon.error { color: var(--error); }
+
+
+        .modal-title {
+            font-size: 1.6rem; /* Slightly smaller title */
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .verification-progress {
+            height: 8px;
+            background: var(--border-color); /* Use border color */
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .verification-timer {
+            font-size: 1.1rem; /* Slightly smaller timer */
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .verification-note, .modal-note {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+        .modal-note strong {
+             color: var(--text-color);
+             font-weight: 600;
+        }
+        .payment-id-display {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+         .payment-id-display strong { color: var(--primary); }
+
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .payment-card {
+                flex-direction: column;
+            }
+
+            .payment-sidebar {
+                width: 100%;
+                padding: 2rem;
+                min-height: auto; /* Remove min-height */
+            }
+
+            .payment-form-container {
+                padding: 2rem;
+                overflow-y: visible; /* Disable scroll inside form */
+            }
+            .payment-steps {
+                margin-top: 2rem; /* Add space when stacked */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .header {
+                 padding: 0 0.5rem; /* Reduce header padding */
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0; /* Remove gap when stacked */
+            }
+             .form-row .form-col:not(:last-child) .form-group {
+                 margin-bottom: 1.5rem; /* Ensure margin between stacked inputs */
+             }
+
+
+            .payment-sidebar, .payment-form-container {
+                padding: 1.5rem;
+            }
+
+            .sidebar-title, .form-title, .modal-title {
+                font-size: 1.5rem;
+            }
+            .modal-content {
+                 padding: 2rem 1.5rem; /* Adjust modal padding */
+            }
+
+            .qr-code {
+                width: 160px;
+                height: 160px;
+            }
+
+             .bank-detail {
+                 flex-direction: column; /* Stack bank details */
+                 align-items: flex-start; /* Align left */
+                 gap: 0.25rem; /* Reduce gap */
+             }
+             .bank-value-container {
+                 margin-top: 0.25rem;
+             }
+        }
+
+         @media (max-width: 576px) {
+            .sidebar-title, .form-title, .modal-title {
+                font-size: 1.3rem;
+            }
+            .btn {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.25rem;
+            }
+            .modal-icon {
+                font-size: 3rem;
+            }
+            .qr-code {
+                 width: 140px;
+                 height: 140px;
+            }
+            .header-controls {
+                gap: 1rem; /* Reduce gap in header controls */
+                width: 100%; /* Make controls take full width if wrapped */
+                justify-content: space-between; /* Space out controls */
+            }
+            .theme-switch-wrapper {
+                font-size: 0.9rem; /* Slightly smaller text */
+            }
+         }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>Sugam Pay for Edusphere Course Plan</span>
+            </div>
+
+            <div class="header-controls">
+                <a href="#" class="support-link">
+                    <i class="fas fa-headset"></i> Need help?
+                </a>
+                 <!-- Dark Mode Toggle -->
+                <div class="theme-switch-wrapper">
+                    <i class="fas fa-sun" style="margin-right: 5px; color: var(--accent);"></i> <!-- Sun Icon -->
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" aria-label="Toggle dark mode"/>
+                        <div class="slider"></div>
+                    </label>
+                    <i class="fas fa-moon" style="margin-left: 5px; color: var(--primary);"></i> <!-- Moon Icon -->
+                </div>
+            </div>
+        </header>
+
+        <div class="payment-card">
+            <!-- Payment Sidebar -->
+            <div class="payment-sidebar">
+                <div class="sidebar-overlay"></div>
+
+                <div class="sidebar-content">
+                    <h2 class="sidebar-title">Complete Your Demo  Payment</h2>
+                    <p class="sidebar-subtitle">Review your fake details and choose a payment method to finalize your payment.</p>
+
+                    <!-- Payment Summary -->
+                    <div class="payment-summary">
+                        <div class="summary-title">Order Summary</div>
+                        <div class="summary-item">
+                            <span class="summary-label">Amount Due:</span>
+                            <span class="summary-value">₹99.00</span>
+                        </div>
+                         <div class="summary-item">
+                            <span class="summary-label">Payment Method:</span>
+                            <span class="summary-value" id="summaryMethod">Not Selected</span>
+                        </div>
+                         <!-- Add more summary items if needed -->
+                         <!-- <div class="summary-item">
+                            <span class="summary-label">Item:</span>
+                            <span class="summary-value">Product/Service Name</span>
+                        </div> -->
+                    </div>
+
+                    <div class="payment-steps">
+                        <div class="step-item completed">
+                            <div class="step-number"><i class="fas fa-check"></i><span aria-hidden="true">1</span></div>
+                            <div class="step-text">Personal Details</div>
+                        </div>
+                        <div class="step-item active" id="step-payment">
+                            <div class="step-number"><span aria-hidden="true">2</span></div>
+                            <div class="step-text">Payment Information</div>
+                        </div>
+                        <div class="step-item" id="step-verification">
+                            <div class="step-number"><span aria-hidden="true">3</span></div>
+                            <div class="step-text">Verification</div>
+                        </div>
+                        <div class="step-item" id="step-confirmation">
+                            <div class="step-number"><span aria-hidden="true">4</span></div>
+                            <div class="step-text">Confirmation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="payment-form-container">
+                <h1 class="form-title">Payment Information</h1>
+                <p class="form-subtitle">Enter your fake details and choose your payment method for <strong>₹99.00</strong></p>
+
+                <form id="paymentForm" novalidate>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" id="fullName" class="form-control" placeholder="Sugam" required aria-required="true" aria-describedby="fullNameError">
+                                <span class="invalid-feedback" id="fullNameError" role="alert">Please enter your full name.</span>
+                            </div>
+                        </div>
+                        <div class="form-col">
+    <div class="form-group">
+        <label for="contactNumber" class="form-label">Contact Number</label>
+        <input type="tel" id="contactNumber" class="form-control" placeholder="+91 91234 56789" required aria-required="true" 
+               pattern="^(\+91[\-\s]?)?[6-9]\d{9}$" aria-describedby="contactNumberError">
+        <span class="invalid-feedback" id="contactNumberError" role="alert">
+            Please enter a valid Indian mobile number (e.g., 9123456789 or +91 9123456789).
+        </span>
+    </div>
+</div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-control" placeholder="your@email.com" required aria-required="true" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" aria-describedby="emailError">
+                         <span class="invalid-feedback" id="emailError" role="alert">Please enter a valid email address.</span>
+                    </div>
+
+                    <!-- Payment Dropdown -->
+                    <div class="payment-dropdown">
+                        <label class="form-label">Select Payment Method</label> <!-- Added label for dropdown -->
+                        <div class="dropdown-toggle" id="paymentDropdown" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="dropdownMenu" tabindex="0">
+                            <div class="toggle-content">
+                                <img src="https://via.placeholder.com/30x30/eee/ccc?text=?" class="method-icon" id="selectedMethodIcon" alt=""> <!-- Placeholder icon -->
+                                <span id="selectedMethodText">Select Payment Method</span>
+                            </div>
+                            <i class="fas fa-chevron-down toggle-arrow" aria-hidden="true"></i>
+                        </div>
+                        <input type="hidden" id="selectedPaymentMethod" name="paymentMethod" required aria-describedby="paymentMethodError"> <!-- Hidden input for validation -->
+
+
+                        <div class="dropdown-menu" id="dropdownMenu" role="listbox">
+                            <div class="dropdown-item" data-method="gcash" data-icon="https://cdn.prod.website-files.com/6385b55675a0bd614777a5c1/6474928322d48888f6c8cfe5_biz-gcash-logo.svg" role="option">
+                                <img src="https://cdn.prod.website-files.com/6385b55675a0bd614777a5c1/6474928322d48888f6c8cfe5_biz-gcash-logo.svg" class="method-icon" alt="GCash Logo">
+                                <span>GCash</span>
+                            </div>
+                            <div class="dropdown-item" data-method="maya" data-icon="https://www.maya.ph/hubfs/Maya/MAYA-Mint%20Green.svg" role="option">
+                                <img src="https://www.maya.ph/hubfs/Maya/MAYA-Mint%20Green.svg" class="method-icon" alt="Maya Logo">
+                                <span>Maya</span>
+                            </div>
+                            <div class="dropdown-item" data-method="bank" data-icon="https://www.unionbankph.com/sites/default/files/2019-06/uborange.svg" role="option">
+                                <img src="https://www.unionbankph.com/sites/default/files/2019-06/uborange.svg" class="method-icon" alt="UnionBank Logo">
+                                <span>UnionBank Transfer</span>
+                            </div>
+                            <div class="dropdown-item" data-method="wise" data-icon="https://wise.com/public-resources/assets/logos/wise-personal/logo_white.svg" role="option">
+                                <img src="https://wise.com/public-resources/assets/logos/wise-personal/logo_white.svg" class="method-icon" alt="Wise Logo">
+                                <span>Wise (International)</span>
+                            </div>
+                        </div>
+                         <span class="invalid-feedback" id="paymentMethodError" role="alert">Please select a payment method.</span>
+                    </div>
+
+                    <!-- Payment Method Content Areas -->
+                    <!-- GCash -->
+                    <div class="method-content" id="gcashContent">
+                        <h3 class="form-label">GCash Payment Details</h3>
+                        <div class="qr-container">
+                            <div class="qr-code" id="gcashQr">
+                                <img src="https://storage.googleapis.com/msgsndr/11Kdv7oGNAjcgTxTVwrz/media/67e7baccc5f22ae585ac6d6e.jpeg" alt="GCash QR Code">
+                            </div>
+                            <p class="qr-instructions">Scan the QR code using your GCash app or use the details below.</p>
+                        </div>
+
+                        <div class="bank-info">
+                            <div class="bank-detail">
+                                <span class="bank-label">GCash Number:</span>
+                                <div class="bank-value-container">
+                                    <span class="bank-value" id="gcash-number-value">0917 123 4567</span>
+                                    <button type="button" class="copy-btn" data-clipboard-target="#gcash-number-value" data-tooltip="Copy GCash Number"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Account Name:</span>
+                                <span class="bank-value">Mavens Pay Inc.</span>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Amount:</span>
+                                <span class="bank-value">₹99.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gcashNumber" class="form-label">Your GCash Number Used for Payment</label>
+                            <input type="tel" id="gcashNumber" class="form-control" placeholder="0917 000 0000" required pattern="^(09)\d{9}$" aria-describedby="gcashNumberError">
+                             <span class="invalid-feedback" id="gcashNumberError" role="alert">Please enter the GCash number you paid from (09xxxxxxxxx).</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gcashScreenshot" class="form-label">Upload Payment Proof</label>
+                            <input type="file" id="gcashScreenshot" class="form-control" accept="image/png, image/jpeg, image/jpg, application/pdf" required aria-required="true" aria-describedby="gcashScreenshotError">
+                            <small class="form-text">Required. Upload screenshot or PDF of your GCash confirmation. Max 5MB.</small>
+                             <span class="invalid-feedback" id="gcashScreenshotError" role="alert">Please upload your payment proof (PNG, JPG, PDF - max 5MB).</span>
+                        </div>
+                    </div>
+
+                    <!-- Maya -->
+                    <div class="method-content" id="mayaContent">
+                         <h3 class="form-label">Maya Payment Details</h3>
+                        <div class="qr-container">
+                            <div class="qr-code" id="mayaQr">
+                                <img src="https://storage.googleapis.com/msgsndr/11Kdv7oGNAjcgTxTVwrz/media/67e7c11637929419ece5befe.jpeg" alt="Maya QR Code">
+                            </div>
+                            <p class="qr-instructions">Scan the QR code using your Maya app or use the details below.</p>
+                        </div>
+
+                         <div class="bank-info">
+                            <div class="bank-detail">
+                                <span class="bank-label">Maya Number:</span>
+                                <div class="bank-value-container">
+                                    <span class="bank-value" id="maya-number-value">0917 765 4321</span>
+                                    <button type="button" class="copy-btn" data-clipboard-target="#maya-number-value" data-tooltip="Copy Maya Number"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Account Name:</span>
+                                <span class="bank-value">Mavens Pay Inc.</span>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Amount:</span>
+                                <span class="bank-value">₹99.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mayaNumber" class="form-label">Your Maya Number Used for Payment</label><!--09171234567
+ -->
+                            <input type="tel" id="mayaNumber" class="form-control" placeholder="0917 000 0000" required pattern="^(09)\d{9}$" aria-describedby="mayaNumberError">
+                             <span class="invalid-feedback" id="mayaNumberError" role="alert">Please enter the Maya number you paid from (09xxxxxxxxx).</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mayaScreenshot" class="form-label">Upload Payment Proof</label>
+                            <input type="file" id="mayaScreenshot" class="form-control" accept="image/png, image/jpeg, image/jpg, application/pdf" required aria-required="true" aria-describedby="mayaScreenshotError">
+                            <small class="form-text">Required. Upload screenshot or PDF of your Maya confirmation. Max 5MB.</small>
+                            <span class="invalid-feedback" id="mayaScreenshotError" role="alert">Please upload your payment proof (PNG, JPG, PDF - max 5MB).</span>
+                        </div>
+                    </div>
+
+                    <!-- UnionBank -->
+                    <div class="method-content" id="bankContent">
+                         <h3 class="form-label">UnionBank Transfer Details</h3>
+                         <div class="qr-container">
+                            <div class="qr-code" id="bankQr">
+                                <img src="https://storage.googleapis.com/msgsndr/11Kdv7oGNAjcgTxTVwrz/media/67e7c1161870f47df845600c.jpeg" alt="UnionBank QR Code">
+                            </div>
+                            <p class="qr-instructions">Scan the QR Ph code using your banking app or use the details below.</p>
+                        </div>
+
+                        <div class="bank-info">
+                             <div class="bank-detail">
+                                <span class="bank-label">Bank Name:</span>
+                                <span class="bank-value">UnionBank of the India</span>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Account Name:</span>
+                                <span class="bank-value">Sugam Pay Inc.</span>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Account Number:</span>
+                                <div class="bank-value-container">
+                                    <span class="bank-value" id="bank-account-value">1234 5678 9012</span>
+                                    <button type="button" class="copy-btn" data-clipboard-target="#bank-account-value" data-tooltip="Copy Account Number"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Amount:</span>
+                                <span class="bank-value">₹99.00</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="senderName" class="form-label">Your Full Name (as on bank account)</label>
+                            <input type="text" id="senderName" class="form-control" placeholder="John Doe" required aria-required="true" aria-describedby="senderNameError">
+                             <span class="invalid-feedback" id="senderNameError" role="alert">Please enter the name on the bank account you paid from.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="transactionId" class="form-label">Transaction Reference Number</label>
+                            <input type="text" id="transactionId" class="form-control" placeholder="Find this on your bank receipt/confirmation" required aria-required="true" data-tooltip="Usually a mix of letters and numbers provided after a successful transfer" aria-describedby="transactionIdError">
+                            <span class="invalid-feedback" id="transactionIdError" role="alert">Please enter the transaction reference number.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bankScreenshot" class="form-label">Upload Payment Proof</label>
+                            <input type="file" id="bankScreenshot" class="form-control" accept="image/png, image/jpeg, image/jpg, application/pdf" required aria-required="true" aria-describedby="bankScreenshotError">
+                            <small class="form-text">Required. Upload screenshot or PDF of your bank transfer confirmation. Max 5MB.</small>
+                             <span class="invalid-feedback" id="bankScreenshotError" role="alert">Please upload your payment proof (PNG, JPG, PDF - max 5MB).</span>
+                        </div>
+                    </div>
+
+                    <!-- Wise -->
+                    <div class="method-content" id="wiseContent">
+                         <h3 class="form-label">Wise (TransferWise) Details</h3>
+                         <div class="qr-container">
+                            <div class="qr-code" id="wiseQr">
+                                <img src="https://storage.googleapis.com/msgsndr/11Kdv7oGNAjcgTxTVwrz/media/67e7bacc1870f48aa5455b95.jpeg" alt="Wise QR Code">
+                            </div>
+                            <p class="qr-instructions">Scan the QR code or use the details below.</p>
+                        </div>
+
+                         <div class="bank-info">
+                            <div class="bank-detail">
+                                <span class="bank-label">Recipient Name:</span>
+                                <span class="bank-value">Sugam Pay Inc.</span>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Wise Email / Recipient Tag:</span>
+                                <div class="bank-value-container">
+                                    <span class="bank-value" id="wise-email-value">sugamcreations2020@gmail.com</span>
+                                    <button type="button" class="copy-btn" data-clipboard-target="#wise-email-value" data-tooltip="Copy Wise Email"><i class="far fa-copy"></i> Copy</button>
+                                </div>
+                            </div>
+                            <div class="bank-detail">
+                                <span class="bank-label">Amount:</span>
+                                <span class="bank-value">₹99.00 (or equivalent)</span>
+                            </div>
+                             <div class="bank-detail">
+                                <span class="bank-label">Reference/Message:</span>
+                                <span class="bank-value">Your Name / Order ID</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wiseEmail" class="form-label">Your Wise Email Used for Payment</label>
+                            <input type="email" id="wiseEmail" class="form-control" placeholder="your@email.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" aria-describedby="wiseEmailError">
+                            <span class="invalid-feedback" id="wiseEmailError" role="alert">Please enter the Wise email address you paid from.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="wiseScreenshot" class="form-label">Upload Payment Proof</label>
+                            <input type="file" id="wiseScreenshot" class="form-control" accept="image/png, image/jpeg, image/jpg, application/pdf" required aria-required="true" aria-describedby="wiseScreenshotError">
+                            <small class="form-text">Required. Upload screenshot or PDF of your Wise confirmation. Max 5MB.</small>
+                             <span class="invalid-feedback" id="wiseScreenshotError" role="alert">Please upload fake or any payment proof (PNG, JPG, PDF - max 5MB).</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submitPaymentBtn">
+                            <span class="spinner" aria-hidden="true"></span> <!-- Loading spinner -->
+                            <i class="fas fa-paper-plane default-icon" aria-hidden="true"></i>
+                            <span class="btn-text">Submit Payment</span>
+                        </button>
+
+                        <div class="payment-security">
+                            <i class="fas fa-shield-alt" aria-hidden="true"></i> Your payment information is securely processed.
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification / Status Modals -->
+    <div class="modal-overlay" id="statusModal" aria-labelledby="modalTitle" aria-describedby="modalSubtitle" role="dialog" aria-modal="true">
+        <div class="modal-content" id="modalInnerContent">
+            <!-- Content dynamically injected by JS -->
+        </div>
+    </div>
+
+    <!-- ClipboardJS for Copy Buttons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const paymentDropdown = document.getElementById('paymentDropdown');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const selectedMethodIcon = document.getElementById('selectedMethodIcon');
+            const selectedMethodText = document.getElementById('selectedMethodText');
+            const hiddenPaymentMethodInput = document.getElementById('selectedPaymentMethod');
+            const methodContents = document.querySelectorAll('.method-content');
+            const paymentForm = document.getElementById('paymentForm');
+            const submitBtn = document.getElementById('submitPaymentBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const defaultIcon = submitBtn.querySelector('.default-icon');
+            const statusModal = document.getElementById('statusModal');
+            const modalInnerContent = document.getElementById('modalInnerContent');
+            const summaryMethod = document.getElementById('summaryMethod');
+            const themeToggle = document.getElementById('checkbox');
+
+            // Step indicators
+            const steps = {
+                payment: document.getElementById('step-payment'),
+                verification: document.getElementById('step-verification'),
+                confirmation: document.getElementById('step-confirmation')
+            };
+
+            // --- Dark Mode ---
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                themeToggle.checked = true;
+            }
+            themeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+
+            // --- Payment Dropdown ---
+            function toggleDropdown() {
+                const isActive = paymentDropdown.classList.toggle('active');
+                dropdownMenu.classList.toggle('show');
+                paymentDropdown.setAttribute('aria-expanded', isActive);
+            }
+
+            paymentDropdown.addEventListener('click', toggleDropdown);
+            paymentDropdown.addEventListener('keydown', (e) => { // Keyboard access
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDropdown();
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!paymentDropdown.contains(e.target) && !dropdownMenu.contains(e.target) && paymentDropdown.classList.contains('active')) {
+                    toggleDropdown();
+                }
+            });
+
+            // Handle dropdown item selection
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectPaymentMethod(this);
+                });
+                item.addEventListener('keydown', (e) => { // Keyboard access
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectPaymentMethod(this);
+                    }
+                });
+            });
+
+            function selectPaymentMethod(item) {
+                const method = item.getAttribute('data-method');
+                const icon = item.getAttribute('data-icon');
+                const text = item.querySelector('span').textContent;
+
+                // Update selected method display
+                selectedMethodIcon.src = icon;
+                selectedMethodIcon.alt = `${text} logo`; // Set alt text
+                selectedMethodText.textContent = text;
+                hiddenPaymentMethodInput.value = method; // Update hidden input value
+                 validateField(hiddenPaymentMethodInput); // Validate selection
+
+                // Update summary
+                summaryMethod.textContent = text;
+
+                // Hide all method contents and remove required attributes from their inputs
+                methodContents.forEach(content => {
+                    content.classList.remove('active');
+                    content.querySelectorAll('input').forEach(input => input.required = false);
+                });
+
+                // Show selected method content and set required attributes
+                const activeContent = document.getElementById(method + 'Content');
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                    activeContent.querySelectorAll('input').forEach(input => {
+                         // Only set required if it originally had the attribute (or add explicitly if needed)
+                         if (input.hasAttribute('required')) {
+                            input.required = true;
+                         }
+                    });
+                }
+
+                // Close dropdown
+                toggleDropdown();
+                paymentDropdown.focus(); // Return focus to the toggle button
+            }
+
+            // --- Copy Buttons ---
+            const clipboard = new ClipboardJS('.copy-btn', {
+                 target: function(trigger) {
+                    // Use data-clipboard-target if available, otherwise assume sibling span
+                    const targetSelector = trigger.getAttribute('data-clipboard-target');
+                    return targetSelector ? document.querySelector(targetSelector) : trigger.previousElementSibling;
+                 }
+            });
+
+            clipboard.on('success', function(e) {
+                const trigger = e.trigger;
+                const originalText = trigger.innerHTML; // Store original content (icon + text)
+                 const originalTooltip = trigger.getAttribute('data-tooltip');
+                 trigger.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                trigger.classList.add('copied');
+                 trigger.setAttribute('data-tooltip', 'Copied!');
+
+
+                setTimeout(() => {
+                    trigger.innerHTML = originalText;
+                    trigger.classList.remove('copied');
+                     trigger.setAttribute('data-tooltip', originalTooltip);
+                }, 2000);
+                e.clearSelection();
+            });
+
+             clipboard.on('error', function(e) {
+                const trigger = e.trigger;
+                const originalTooltip = trigger.getAttribute('data-tooltip');
+                trigger.setAttribute('data-tooltip', 'Failed to copy!');
+                setTimeout(() => {
+                     trigger.setAttribute('data-tooltip', originalTooltip);
+                 }, 2000);
+            });
+
+            // --- Form Validation ---
+             const MB_BYTES = 1024 * 1024;
+             const MAX_FILE_SIZE = 5 * MB_BYTES; // 5 MB
+
+            function validateField(field) {
+                 let isValid = true;
+                 const errorSpan = document.getElementById(field.getAttribute('aria-describedby'));
+                 field.classList.remove('is-invalid'); // Reset state
+                 if (errorSpan) errorSpan.style.display = 'none';
+
+                 // Check required
+                 if (field.required && !field.value.trim()) {
+                     isValid = false;
+                 }
+                 // Check pattern
+                 else if (field.pattern && field.value && !field.validity.patternMismatch) {
+                     // Check specific pattern regex if needed, field.validity.patternMismatch is enough for HTML5
+                      const regex = new RegExp(field.pattern);
+                     if (!regex.test(field.value)) {
+                        // This case might be redundant if pattern attribute is correct
+                        // isValid = false;
+                     }
+                 } else if (field.pattern && field.value && field.validity.patternMismatch) {
+                    isValid = false;
+                 }
+                 // Check email type validity
+                 else if (field.type === 'email' && field.value && !field.validity.valid) {
+                    isValid = false;
+                 }
+                 // Check file input specifics
+                 else if (field.type === 'file' && field.required && field.files.length === 0) {
+                    isValid = false;
+                     errorSpan.textContent = 'Please select a file.';
+                 } else if (field.type === 'file' && field.files.length > 0) {
+                    const file = field.files[0];
+                    const allowedTypes = field.accept.split(',').map(t => t.trim());
+                    // Basic type check
+                    if (!allowedTypes.includes(file.type)) {
+                         isValid = false;
+                         errorSpan.textContent = `Invalid file type. Allowed: ${field.accept}`;
+                    }
+                    // Size check
+                    else if (file.size > MAX_FILE_SIZE) {
+                         isValid = false;
+                          errorSpan.textContent = `File is too large. Max size: ${MAX_FILE_SIZE / MB_BYTES}MB.`;
+                    }
+                 }
+                 // Check hidden input for payment method selection
+                 else if (field.id === 'selectedPaymentMethod' && field.required && !field.value) {
+                      isValid = false;
+                      paymentDropdown.classList.add('is-invalid'); // Style the toggle
+                 }
+
+
+                 if (!isValid) {
+                     field.classList.add('is-invalid');
+                     if (errorSpan) errorSpan.style.display = 'block';
+                      if (field.id === 'selectedPaymentMethod') {
+                         paymentDropdown.classList.add('is-invalid');
+                         document.getElementById('paymentMethodError').style.display = 'block';
+                      }
+                 } else {
+                     if (field.id === 'selectedPaymentMethod') {
+                        paymentDropdown.classList.remove('is-invalid');
+                        document.getElementById('paymentMethodError').style.display = 'none';
+                     }
+                 }
+                 return isValid;
+            }
+
+            paymentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isFormValid = true;
+
+                // Validate all common fields + visible specific fields
+                const fieldsToValidate = paymentForm.querySelectorAll('input[required]:not([type="hidden"]), select[required]');
+                fieldsToValidate.forEach(field => {
+                    // Only validate visible fields within the active method content
+                    const parentContent = field.closest('.method-content');
+                    if (!parentContent || parentContent.classList.contains('active')) {
+                        if (!validateField(field)) {
+                            isFormValid = false;
+                        }
+                    } else {
+                         // Ensure hidden fields are valid (reset state) if not required
+                         field.classList.remove('is-invalid');
+                         const errorSpan = document.getElementById(field.getAttribute('aria-describedby'));
+                         if(errorSpan) errorSpan.style.display = 'none';
+                    }
+                });
+
+                 // Validate the hidden payment method selector input
+                 if (!validateField(hiddenPaymentMethodInput)) {
+                     isFormValid = false;
+                 }
+
+                if (isFormValid) {
+                    // --- Form is valid, proceed with submission simulation ---
+                    startVerificationProcess();
+                } else {
+                    // Find the first invalid field and focus it
+                    const firstInvalid = paymentForm.querySelector('.is-invalid');
+                     if (firstInvalid) {
+                         if(firstInvalid.id === 'selectedPaymentMethod'){
+                             paymentDropdown.focus(); // Focus dropdown toggle if method not selected
+                         } else {
+                             firstInvalid.focus();
+                         }
+                     }
+                }
+            });
+
+             // Add blur validation
+            paymentForm.querySelectorAll('input, select').forEach(field => {
+                field.addEventListener('blur', () => validateField(field));
+            });
+
+            // --- Verification Modal & Simulation ---
+            let verificationTimerInterval;
+             let progressInterval;
+
+            function startVerificationProcess() {
+                // Update Steps
+                steps.payment.classList.remove('active');
+                steps.payment.classList.add('completed');
+                 steps.payment.querySelector('.step-number').innerHTML = '<i class="fas fa-check"></i><span aria-hidden="true">2</span>'; // Add checkmark
+                steps.verification.classList.add('active');
+
+                // Disable button and show loading state
+                submitBtn.disabled = true;
+                submitBtn.classList.add('loading');
+                btnText.textContent = 'Submitting...';
+                defaultIcon.style.display = 'none';
+
+                // Generate a pseudo payment ID
+                const paymentId = 'MP-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                // Show Verification Modal
+                showModal('verifying', paymentId);
+
+                // Simulate progress
+                let progress = 0;
+                let secondsElapsed = 0;
+                const totalDurationSeconds = 10; // Shortened for demo (was 30 mins * 60)
+                 const progressBar = document.getElementById('verificationProgress');
+                 const timerDisplay = document.getElementById('verificationTimer');
+
+                progressInterval = setInterval(() => {
+                    progress += Math.random() * (100 / totalDurationSeconds * 0.5); // Update progress every 0.5s
+                    if (progress > 100) progress = 100;
+                    if (progressBar) progressBar.style.width = progress + '%';
+                 }, 500); // Update progress bar faster
+
+                 verificationTimerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    const secondsRemaining = totalDurationSeconds - secondsElapsed;
+                     const minutes = Math.floor(secondsRemaining / 60);
+                     const seconds = secondsRemaining % 60;
+
+                    if (timerDisplay) {
+                        if (secondsRemaining > 0) {
+                             timerDisplay.textContent = `Verification time: ~${minutes > 0 ? minutes + ' min ' : ''}${seconds} sec remaining`;
+                        } else {
+                            timerDisplay.textContent = 'Processing final checks...';
+                        }
+                    }
+
+
+                    if (secondsElapsed >= totalDurationSeconds) {
+                        clearInterval(verificationTimerInterval);
+                         clearInterval(progressInterval);
+                         if (progressBar) progressBar.style.width = '100%'; // Ensure it reaches 100%
+
+                        // Simulate success/failure (e.g., 90% chance of success)
+                        const isSuccess = Math.random() < 0.9;
+
+                        setTimeout(() => { // Short delay before showing final status
+                             if (isSuccess) {
+                                showModal('success', paymentId);
+                                // Update Steps
+                                steps.verification.classList.remove('active');
+                                steps.verification.classList.add('completed');
+                                 steps.verification.querySelector('.step-number').innerHTML = '<i class="fas fa-check"></i><span aria-hidden="true">3</span>';
+                                steps.confirmation.classList.add('active'); // Mark confirmation as active (final state)
+                             } else {
+                                showModal('error', paymentId);
+                                // Reset steps slightly
+                                steps.verification.classList.remove('active');
+                                steps.payment.classList.add('active'); // Go back to payment step visually
+                                steps.payment.classList.remove('completed');
+                                steps.payment.querySelector('.step-number').innerHTML = '<span aria-hidden="true">2</span>'; // Remove checkmark
+                             }
+                             // Re-enable button
+                             resetSubmitButton();
+                        }, 1000);
+                    }
+                }, 1000);
+            }
+
+            function resetSubmitButton() {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Submit Payment';
+                 defaultIcon.style.display = 'inline-block';
+            }
+
+             function showModal(type, paymentId = '') {
+                let modalHTML = '';
+                 let closeButtonHTML = `<button type="button" class="modal-close-btn" aria-label="Close modal" onclick="closeModal()">×</button>`;
+
+                switch (type) {
+                    case 'verifying':
+                        modalHTML = `
+                            ${closeButtonHTML}
+                            <div class="modal-icon verifying"><i class="fas fa-hourglass-half"></i></div>
+                            <h2 class="modal-title" id="modalTitle">Payment Verification in Progress</h2>
+                            <p class="modal-subtitle" id="modalSubtitle">We're verifying your payment details. Please wait.</p>
+                            <div class="verification-progress">
+                                <div class="progress-bar" id="verificationProgress"></div>
+                            </div>
+                            <div class="verification-timer" id="verificationTimer">Calculating time...</div>
+                            <p class="verification-note">
+                                You'll receive an email confirmation once verified. If issues arise, contact <strong>sugamcreations2020@gmail.com</strong>.
+                            </p>`;
+                        break;
+                    case 'success':
+                        modalHTML = `
+                             ${closeButtonHTML}
+                            <div class="modal-icon success"><i class="fas fa-check-circle"></i></div>
+                            <h2 class="modal-title" id="modalTitle">Payment Successful!</h2>
+                            <p class="modal-subtitle" id="modalSubtitle">Your payment has been verified and confirmed.</p>
+                             <div class="payment-id-display">
+                                Your Payment ID: <strong>${paymentId}</strong>
+                             </div>
+                            <p class="modal-note">
+                                A confirmation email has been sent to the provided address. Thank you for your payment!
+                                <br><br> Need help? Contact <strong>sugamcreations2020@gmail.com</strong>
+                            </p>`;
+                        break;
+                    case 'error':
+                         modalHTML = `
+                            ${closeButtonHTML}
+                            <div class="modal-icon error"><i class="fas fa-times-circle"></i></div>
+                            <h2 class="modal-title" id="modalTitle">Payment Verification Failed</h2>
+                            <p class="modal-subtitle" id="modalSubtitle">We couldn't verify your payment at this time.</p>
+                            ${paymentId ? `<div class="payment-id-display">Attempted Payment ID: <strong>${paymentId}</strong></div>` : ''}
+                            <p class="modal-note">
+                                Possible reasons: Incorrect details, insufficient funds, or connection issues.
+                                Please double-check your information and try again.
+                                <br><br> If the problem persists, contact support at <strong>contact@launchmavenagency.com</strong>
+                            </p>`;
+                        break;
+                }
+                modalInnerContent.innerHTML = modalHTML;
+                statusModal.classList.add('active');
+                 // Focus the close button for accessibility
+                 setTimeout(() => { // Delay focus slightly to ensure modal is fully rendered
+                    const closeBtn = modalInnerContent.querySelector('.modal-close-btn');
+                    if (closeBtn) closeBtn.focus();
+                 }, 100);
+            }
+
+             // Make closeModal globally accessible for the inline onclick
+             window.closeModal = function() {
+                 clearInterval(verificationTimerInterval);
+                 clearInterval(progressInterval);
+                 statusModal.classList.remove('active');
+                 modalInnerContent.innerHTML = ''; // Clear content
+                 resetSubmitButton(); // Ensure button is reset if closed during verification
+
+                 // Determine which step should be active if verification was interrupted
+                 if(steps.verification.classList.contains('active') && !steps.confirmation.classList.contains('active')) {
+                     steps.verification.classList.remove('active');
+                     steps.payment.classList.add('active');
+                     steps.payment.classList.remove('completed');
+                     steps.payment.querySelector('.step-number').innerHTML = '<span aria-hidden="true">2</span>';
+                 }
+             }
+
+             // Close modal on escape key
+             document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && statusModal.classList.contains('active')) {
+                    closeModal();
+                }
+             });
+             // Close modal on overlay click
+             statusModal.addEventListener('click', (e) => {
+                if (e.target === statusModal) { // Check if click is on the overlay itself
+                    closeModal();
+                }
+             });
+
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>

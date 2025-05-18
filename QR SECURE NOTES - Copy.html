@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style type="text/css">
+		*, *:after, *:before {
+	 box-sizing: border-box;
+}
+ html, body {
+	 background: #ecf3f7;
+}
+ [v-cloak] {
+	 display: none;
+}
+ #app {
+	 height: 100vh;
+	 font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	 -webkit-font-smoothing: antialiased;
+	 -moz-osx-font-smoothing: grayscale;
+	 color: #2c3e50;
+	 display: flex;
+	 flex-direction: column;
+}
+ @keyframes slide-in {
+	 from {
+		 opacity: 0;
+		 transform: translateY(1rem);
+	}
+	 to {
+		 opacity: 1;
+		 transform: translateY(0);
+	}
+}
+ .title {
+	 margin: auto auto 1rem auto;
+	 animation: slide-in 0.8s 0.2s ease both;
+}
+ .card {
+	 animation: slide-in 0.8s 0.3s ease both;
+	 margin: auto;
+	 width: 20rem;
+	 min-height: 28rem;
+	 display: flex;
+	 flex-direction: column;
+	 background: white;
+	 border-radius: 38px;
+	 padding: 2rem;
+	 position: relative;
+	 overflow: hidden;
+	 box-shadow: -0.4rem 0.8rem 2rem rgba(176, 188, 207, .5), inset 0.2rem -0.2rem 0.7rem rgba(188, 188, 212, .73), inset 1rem -1rem 2rem rgba(10, 197, 137, .05);
+}
+ .text {
+	 height: 2rem;
+	 flex: 1;
+}
+ textarea {
+	 resize: none;
+	 overflow: hidden;
+}
+ input, textarea {
+	 padding: 0.4rem 0.8rem 0.2rem 0;
+	 border: none;
+	 border-bottom: 2px solid #936ae4;
+	 font-size: 0.8rem;
+}
+ label:not(:first-child) {
+	 margin-top: 0.8rem;
+}
+ .qr-view {
+	 margin-top: 1rem;
+	 width: 100%;
+}
+ .btn {
+	 margin: 1rem 0 0 auto;
+	 background: #936ae4;
+	 color: white;
+	 border-radius: 4rem;
+	 border: none;
+	 padding: 0.4rem 1rem;
+	 text-transform: uppercase;
+	 cursor: pointer;
+}
+ .btn:disabled {
+	 cursor: default;
+	 opacity: 0.7;
+	 background: #ccc;
+}
+ .btn--camera {
+	 display: flex;
+	 position: absolute;
+	 z-index: 20;
+	 height: 2rem;
+	 width: 2rem;
+	 border-radius: 50%;
+	 margin: auto;
+	 top: 1rem;
+	 left: 0;
+	 right: 0;
+	 border: 2px solid #c7c7c7;
+	 background: transparent;
+	 cursor: pointer;
+	 outline: none;
+}
+ .btn--camera:hover, .btn--camera.active {
+	 border-color: #936ae4;
+}
+ .btn--camera:hover svg, .btn--camera.active svg {
+	 fill: #936ae4;
+}
+ .btn--camera svg {
+	 flex: 1;
+	 fill: #c7c7c7;
+}
+ .form-group {
+	 position: relative;
+}
+ .form-group input, .form-group textarea {
+	 width: 100%;
+	 padding-right: 2rem;
+}
+ .tg-pw {
+	 position: absolute;
+	 right: 0;
+	 bottom: 0;
+	 background: none;
+	 border: none;
+	 cursor: pointer;
+	 outline: none;
+}
+ .capture {
+	 z-index: 2;
+	 height: 100%;
+	 width: 100%;
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 box-shadow: inset 0.2rem -0.2rem 0.7rem rgba(188, 188, 212, .73), inset 1rem -1rem 2rem rgba(10, 197, 137, .05);
+	 border-radius: inherit;
+	 background: white;
+}
+ .capture h2 {
+	 padding: 1rem;
+	 font-weight: 300;
+	 text-align: center;
+}
+ .reveal-enter-active, .reveal-leave-active {
+	 clip-path: circle(120% at 50% 2rem);
+	 transition: clip-path 0.8s 0.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+ .reveal-enter, .reveal-leave-to {
+	 clip-path: circle(0% at 50% 2rem);
+}
+ .qr-reader {
+	 width: 100%;
+}
+ .qr-reader__wrapper.blur {
+	 filter: blur(8px);
+}
+ .password__wrapper {
+	 position: absolute;
+	 top: 0;
+	 left: 0;
+	 width: 100%;
+	 height: 100%;
+	 background: rgba(0, 0, 0, .7);
+	 display: flex;
+	 z-index: 4;
+}
+ .password__wrapper input {
+	 margin: auto;
+	 border-radius: 4px;
+	 box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, .4);
+	 padding: 1rem;
+	 width: 90%;
+	 border: none;
+	 outline: none;
+}
+ .shake {
+	 animation: shake 0.4s linear forwards;
+}
+ @keyframes shake {
+	 0% {
+		 transform: translateX(-0.5rem);
+	}
+	 20% {
+		 transform: translateX(0.5rem);
+	}
+	 40% {
+		 transform: translateX(-0.5rem);
+	}
+	 60% {
+		 transform: translateX(0.5rem);
+	}
+	 80% {
+		 transform: translateX(-0.5rem);
+	}
+	 100% {
+		 transform: translateX(0rem);
+	}
+}
+ .decrypted {
+	 word-break: break-all;
+	 white-space: pre-wrap;
+	 padding: 1rem;
+	 padding-top: 0;
+}
+ .print {
+	 display: none;
+}
+ @media print {
+	 html, body {
+		 background: white;
+	}
+	 #app {
+		 display: block;
+	}
+	 .title {
+		 display: none;
+	}
+	 h1 {
+		 font-size: 24pt;
+	}
+	 h2 {
+		 font-size: 14pt;
+		 margin-top: 25px;
+	}
+	 .card {
+		 display: none;
+	}
+	 .print {
+		 display: block;
+		 text-align: center;
+	}
+	 .qr-view {
+		 width: 50%;
+		 margin: auto;
+	}
+}
+ 
+	</style>
+</head>
+<body>
+<div id="app" v-cloak>
+  <h1 class="title">QR Secure Notes</h1>
+  <div class="card">
+    <transition name="reveal">
+      <div v-show="decoder.stream" class="capture">
+        <div :class="{ blur: requirePassword }" class="qr-reader__wrapper">
+          <video autoplay class="qr-reader"></video>
+          <h2 v-if="!decData">Waiting for a QR encrypted note...</h2>
+          <p class="decrypted" v-if="decData">{{ decData }}</p>
+        </div>
+        
+        <div v-if="requirePassword" class="password__wrapper">
+          <input
+            v-model="password"
+            placeholder="QR password"
+            type="password"
+            :class="{ shake: wrongPassword }"
+            @animationend="() => (this.wrongPassword = false)"
+            v-on:keyup.enter="showDecrypted"
+          >
+        </div>
+      </div>
+    </transition>
+    
+    <button
+      @click="toggleCamera"
+      type="button"
+      :class="{ active: decoder.stream }"
+      class="btn--camera"
+    >
+      <svg fill="#000000" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+      </svg>
+    </button>
+    <label for="text">Title</label>
+    <input v-model="title" type="text" placeholder="My Paper Wallet">
+
+    <label for="text">Text to encrypt</label>
+    <textarea
+      id="text"
+      class="text"
+      v-model="text"
+      placeholder="Passwords, Ethereum private keys..."
+    ></textarea>
+    <label for="key">Key / Password</label>
+    <div class="form-group">
+      <input
+        id="key"
+        class="key"
+        v-model="key"
+        :type="showPw && 'text' || 'password'"
+      >
+      <button v-if="key.length" class="tg-pw" type="button" @click="tgPw">{{ showPw && '🐵' || '🙈' }}</button>
+    </div>
+    
+
+    <img class="qr-view" :src="qrCodeImg">
+
+    <button
+      :disabled="btnDisabled"
+      type="button"
+      class="btn"
+      @click="print"
+    >Print</button>
+  </div>
+
+  <div class="print">
+    <h1 class="print__title">{{ title }}</h1>
+    <img class="qr-view" :src="qrCodeImg">
+    
+    <h2>How to decode?</h2>
+    <p>Again open  <strong> Click on above camera option </strong> and scan this with your webcam.</p>
+    <strong>or</strong>
+    <p>
+      Scan the code with an app and decode it with
+      <pre>$ openssl enc -d -base64 -A -aes-256-cbc -in <strong>encoded.txt</strong> -out <strong>decoded.txt</strong></pre>
+    </p>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.4/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/cirocosta/qcode-decoder@fe0bbf173fd94f4176659cfbccf00442f3241ea7/build/qcode-decoder.min.js"></script>
+<script type="text/javascript">
+	new Vue({
+  el: '#app',
+  data() {
+    return {
+      title: 'A secure QR note',
+      text: 'sugamk',
+      key: '1234ss',
+      showPw: false,
+      decoder: QCodeDecoder(),
+      qrData: null,
+      requirePassword: false,
+      password: null,
+      wrongPassword: false,
+      decData: null
+    };
+  },
+  computed: {
+    encrypted() {
+      return this.encrypt(this.text, this.key);
+    },
+    qrCodeImg() {
+      const qr = new QRious({
+        value: this.encrypted,
+        size: 1000,
+        foreground: '#414141'
+      });
+      return qr.toDataURL('image/png');
+    },
+    btnDisabled() {
+      return !this.text.length || !this.key.length;
+    }
+  },
+  methods: {
+    encrypt(text, key) {
+      const cipherText = CryptoJS.AES.encrypt(text, key);
+      return cipherText.toString();
+    },
+    decrypt(text, key) {
+      const bytes = CryptoJS.AES.decrypt(text, key);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    },
+    print() {
+      window.print();
+    },
+    tgPw() {
+      this.showPw = !this.showPw;
+    },
+    resetAll() {
+      this.decData = null;
+      this.requirePassword = false;
+      this.password = null;
+      this.qrData = null;
+    },
+    toggleCamera() {
+      const {
+        decoder
+      } = this;
+      if (decoder.stream) {
+        const tracks = decoder.stream.getTracks();
+        tracks[0].stop();
+        decoder.stream = null;
+        this.resetAll();
+      } else {
+        const el = document.querySelector('video');
+        decoder.decodeFromCamera(el, (err, data) => {
+          if (err) return console.log(err);
+          if (!this.requirePassword) {
+            this.password = null;
+            this.qrData = data;
+          }
+          this.requirePassword = true;
+        });
+      }
+    },
+    showDecrypted() {
+      try {
+        const dec = this.decrypt(this.qrData, this.password);
+        if (!dec) throw Error('Empty note or wrong password.');
+        this.requirePassword = false;
+        this.password = null;
+        this.decData = dec;
+      } catch (e) {
+        this.wrongPassword = true;
+        console.log(e);
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
